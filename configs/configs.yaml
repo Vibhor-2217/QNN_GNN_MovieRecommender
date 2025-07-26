@@ -1,0 +1,82 @@
+# Quantum-GNN Hybrid Recommender Configuration
+
+# Data Configuration
+data:
+  data_file: "data/reviews.csv"
+  alternative_files:
+    - "data/u.data"
+    - "reviews.csv"
+    - "u.data"
+  train_test_split: 0.8
+  validation_split: 0.1
+  random_seed: 42
+
+# Model Architecture
+model:
+  # GNN Configuration
+  gnn:
+    embedding_dim: 64
+    hidden_dims: [64, 32]
+    num_layers: 2
+    dropout: 0.1
+    activation: "relu"
+
+  # Quantum Configuration
+  quantum:
+    num_qubits: 4
+    num_layers: 3
+    embedding_dim: 16
+    circuit_type: "variational"  # Options: variational, qaoa, hardware_efficient
+    entanglement: "circular"     # Options: circular, full, none
+    measurement: "expectation"   # Options: expectation, sample
+    device: "default.qubit"      # PennyLane device
+
+  # Hybrid Integration
+  hybrid:
+    integration_type: "sequential"  # Options: sequential, parallel, embedded, attention
+    fusion_dim: 32
+    use_quantum_attention: false
+    quantum_weight: 0.3
+
+# Training Configuration
+training:
+  epochs: 50
+  batch_size: 1024
+  learning_rate: 0.001
+  optimizer: "adam"
+  scheduler: "cosine"
+  early_stopping_patience: 10
+  gradient_clipping: 1.0
+
+  # Loss Configuration
+  loss:
+    type: "mse"  # Options: mse, mae, huber
+    quantum_regularization: 0.01
+    l2_regularization: 0.0001
+
+# Evaluation Configuration
+evaluation:
+  metrics: ["mse", "mae", "rmse", "precision_k", "recall_k", "ndcg_k"]
+  top_k_values: [5, 10, 20]
+  quantum_metrics: ["expressivity", "entanglement", "fidelity"]
+
+# Experiment Configuration
+experiment:
+  name: "quantum_gnn_hybrid"
+  save_dir: "experiments"
+  log_interval: 10
+  save_model: true
+  plot_results: true
+
+  # Ablation Studies
+  ablation:
+    run_gnn_only: true
+    run_quantum_only: true
+    run_hybrid: true
+    compare_circuits: true
+
+# Hardware Configuration
+hardware:
+  device: "cuda"  # Options: cuda, cpu, auto
+  num_workers: 4
+  pin_memory: true
